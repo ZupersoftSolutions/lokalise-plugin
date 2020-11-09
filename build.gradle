@@ -15,8 +15,8 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'distribution'
 
-group 'com.github.likandr'
-version '1.3'
+group 'com.hedvig.android'
+version '1.4'
 
 sourceCompatibility = 1.8
 
@@ -46,21 +46,21 @@ uploadArchives {
 
 pluginBundle {
     website = 'https://likandr.github.io/lokalise-plugin/'
-    vcsUrl = 'https://github.com/Likandr/lokalise-plugin'
-    description = 'This is a gradle plugin for android. Refresh (upload and download) localization files using lokalise.co'
+    vcsUrl = 'https://github.com/hedviginsurance/lokalise-plugin'
+    description = 'This is a gradle plugin for android. Refresh (upload and download) localization files using lokalise.com. Forked from https://github.com/likandr/lokalise-plugin, in order to stop using the deprecated V1 API'
     tags = ['android', 'lokalise-plugin', 'lokalise']
 
     plugins {
         LokalisePlugin {
-            id = 'com.likandr.lokalise'
+            id = 'com.hedvig.android.lokalise'
             displayName = 'Gradle lokalise-plugin'
         }
     }
 
     mavenCoordinates {
-        groupId = "com.github.likandr"
+        groupId = "com.hedvig.android"
         artifactId = "lokalise-plugin"
-        version = "1.3"
+        version = "1.4"
     }
 }
 

@@ -27,14 +27,13 @@ class DownloadStrings extends DefaultTask {
         def locoBuildDir = new File("$project.buildDir.path$separator$nameTempLokaliseDir")
         def zipPath = "$locoBuildDir${separator}lang-file.zip"
 
-
         // https://lokalise.co/api2docs/curl/#transition-download-files-post
 
         // curl --request POST \
         //  --url https://api.lokalise.co/api2/projects/{project_id}/files/download \
         //  --header 'content-type: application/json' \
         //  --header 'x-api-token: {project_api_token}' \
-        //  --data '{"format":"json","original_filenames":true}'
+        //  --data '{"format":"json","original_filenames":true, "replace_breaks":true}'
 
         def url = new URL("https://api.lokalise.co/api2/projects/${lokalise_id}/files/download")
         def connection = url.openConnection()
@@ -43,17 +42,16 @@ class DownloadStrings extends DefaultTask {
         connection.addRequestProperty("x-api-token", lokalise_token)
         connection.doOutput = true
 
-        def queryString = """{
+        def body = """{
                 |"format": "xml", 
-                |"original_filenames": ${config.originalFilenames},
-                |"directory_prefix": "values-%LANG_ISO%",
                 |"export_sort": "${config.order.value}",
-                |"export_empty_as": "${config.emptyTranslationStrategy.value}"
+                |"export_empty_as": "${config.emptyTranslationStrategy.value}",
+                |"replace_breaks":true
                 |}""".stripMargin()
 
-        println "Sending request\n\t$queryString"
+        println "Sending request\n\t$body"
         def writer = new OutputStreamWriter(connection.outputStream)
-        writer.write(queryString)
+        writer.write(body)
         writer.flush()
         writer.close()
         connection.connect()
@@ -101,13 +99,6 @@ class DownloadStrings extends DefaultTask {
         project.copy {
             from project.zipTree(new File(fullZipFilePath))
             into dirForUnzipped
-        }
-    }
-
-    private void copyToRes(dirForUnzipped, dirRes) {
-        project.copy {
-            from dirForUnzipped
-            into dirRes
         }
     }
 }

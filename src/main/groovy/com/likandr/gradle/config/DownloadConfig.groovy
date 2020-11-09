@@ -1,7 +1,6 @@
 package com.likandr.gradle.config
 
 class DownloadConfig {
-    boolean originalFilenames = false
     Order order = Order.FIRST_ADDED
     Strategy emptyTranslationStrategy = Strategy.SKIP
 
