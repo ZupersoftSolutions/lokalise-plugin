@@ -16,7 +16,7 @@ apply plugin: 'maven'
 apply plugin: 'distribution'
 
 group 'com.hedvig.android'
-version '1.4'
+version '1.4.1'
 
 sourceCompatibility = 1.8
 
@@ -60,7 +60,7 @@ pluginBundle {
     mavenCoordinates {
         groupId = "com.hedvig.android"
         artifactId = "lokalise-plugin"
-        version = "1.4"
+        version = "1.4.1"
     }
 }
 
