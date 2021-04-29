@@ -5,12 +5,12 @@ import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 
 import java.util.regex.Pattern
 
 class UploadStrings extends DefaultTask {
-    def separator = File.separator
     @Input String lokalise_token
     @Input String lokalise_id
     @Input Project project
@@ -19,29 +19,20 @@ class UploadStrings extends DefaultTask {
     def handle() {
         def dirRes = project.android.sourceSets.findByName("main").res.srcDirs.first()
 
-        def nameTempLokaliseDir = "lokalise"
-        def locoBuildDir = new File("$project.buildDir.path$separator$nameTempLokaliseDir")
-        def zipPath = "$locoBuildDir${separator}lang-file.zip"
-        def dirForUnzipped = "$project.buildDir.path$separator$nameTempLokaliseDir${separator}unzipped"
-
         def listOfPaths = project.fileTree("$dirRes").include("**/strings.xml").files.path
-        println listOfPaths
 
         for (String item in listOfPaths) {
             def asd = item.split(Pattern.quote('\\'))
-            println asd.toString()
 
             for (eeee in asd) {
                 if (eeee.contains("value")) {
                     def zzz = eeee.split("-")
-                    String lang = "en"
 
                     if (zzz.size() == 2)
                         lang = zzz[1]
                     else
                         lang = getDefaultLang(lokalise_token, lokalise_id)
 
-                    println lang
                     ////
                     String charset = "ISO-8859-1"
                     File   uploadFile1 = new File(item)
@@ -57,10 +48,6 @@ class UploadStrings extends DefaultTask {
                         multipart.addFilePart("fileUpload", uploadFile1)
 
                         List<String> response = multipart.finish()
-                        System.out.println("SERVER REPLIED:")
-                        for (String line : response) {
-                            System.out.println(line)
-                        }
                     } catch (IOException ex) {
                         System.out.println("ERROR: " + ex.getMessage())
                         ex.printStackTrace()
@@ -83,7 +70,6 @@ class UploadStrings extends DefaultTask {
     }
 
     private String getDefaultLang(lokalise_token, lokalise_id) {
-        println "Get default lang from project..."
         def jsonSlurper = new JsonSlurper()
 
         def headers = [Accept: 'application/json']
@@ -97,7 +83,6 @@ class UploadStrings extends DefaultTask {
 //            '&id=' + lokalise_id
 //    ].execute().text
         ///////
-        println response
 
         def langsJson = jsonSlurper.parseText(response)
         def lang = ""
@@ -105,7 +90,6 @@ class UploadStrings extends DefaultTask {
             if (item.is_default == "1")
                 lang = item.iso
         }
-        println "result: " + lang
         return lang
     }
 }

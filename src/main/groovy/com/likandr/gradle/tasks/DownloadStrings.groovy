@@ -5,10 +5,12 @@ import groovy.json.JsonSlurper
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.TaskExecutionException
 
 class DownloadStrings extends DefaultTask {
+    @Internal
     def separator = File.separator
     @Input
     String lokalise_token
@@ -49,7 +51,6 @@ class DownloadStrings extends DefaultTask {
                 |"replace_breaks":true
                 |}""".stripMargin()
 
-        println "Sending request\n\t$body"
         def writer = new OutputStreamWriter(connection.outputStream)
         writer.write(body)
         writer.flush()
@@ -65,23 +66,16 @@ class DownloadStrings extends DefaultTask {
 
         String response = connection.inputStream.text
 
-        println "got response\n\t$response"
         def responseJson = new JsonSlurper().parseText(response)
         String bundleUrl = responseJson.bundle_url
 
-        println "Create temp dirs:\n\t$locoBuildDir"
         locoBuildDir.mkdirs()
 
-        println "Start download bundle: $bundleUrl"
         saveUrlContentToFile(zipPath, bundleUrl)
 
-        println "Unzipping downloaded bundle into res folder ($dirRes.path)..."
         unzipReceivedZipFile(zipPath, dirRes)
 
-        println "Delete temp dirs for zip file."
         locoBuildDir.deleteDir()
-
-        println "Done."
     }
 
     private void saveUrlContentToFile(String zipPath, String filePathUrl) {
