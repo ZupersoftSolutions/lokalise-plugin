@@ -12,7 +12,7 @@ buildscript {
 apply plugin: "com.gradle.plugin-publish"
 apply plugin: 'groovy'
 apply plugin: 'java'
-apply plugin: 'maven'
+//apply plugin: 'maven'
 apply plugin: 'distribution'
 
 group 'com.hedvig.android'
@@ -26,23 +26,23 @@ repositories {
 }
 
 dependencies {
-    compile gradleApi()
-    compile localGroovy()
+    implementation gradleApi()
+    implementation localGroovy()
 
-    testCompile(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
+    testImplementation(group: 'org.spockframework', name: 'spock-core', version: '1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy', module: 'groovy-all'
     }
 
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation group: 'junit', name: 'junit', version: '4.12'
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: uri('artifacts'))
-        }
-    }
-}
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository(url: uri('artifacts'))
+//        }
+//    }
+//}
 
 pluginBundle {
     website = 'https://likandr.github.io/lokalise-plugin/'
@@ -77,4 +77,4 @@ def distributionsCopySpec = copySpec {
 task fatJarZip(type: Zip) { with distributionsCopySpec }
 task fatJarTar(type: Tar) { with distributionsCopySpec }
 
-uploadArchives.dependsOn(fatJarZip, fatJarTar)
+//uploadArchives.dependsOn(fatJarZip, fatJarTar)
